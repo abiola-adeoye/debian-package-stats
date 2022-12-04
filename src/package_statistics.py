@@ -139,10 +139,13 @@ class DebPackageStatistics():
     # function orders and prints pacakge statistics with most files in descending order
     def __order_package_statistics(self, stats: Dict[str, int]):
         count = 0
+        chars = 50
         stats_sorted = sorted(stats, key=stats.get, reverse=True)
         print("\n\n")
         for stat_key in stats_sorted:
             count += 1
             if count > 10:
                 break
-            print("{}             {}".format(stat_key, stats[stat_key]))
+            len_package_name_chars = len(stat_key)
+            fillers_to_print = chars - (len_package_name_chars)
+            print(stat_key, stats[stat_key], sep="."*fillers_to_print)
