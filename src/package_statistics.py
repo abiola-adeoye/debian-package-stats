@@ -78,24 +78,24 @@ class DebPackageStatistics(object):
         content_index_arch_info = []
 
         self.logger.info("Started reading compressed index file")
-        with gzip.open(self.contents_index_file_name, 'rt',encoding='utf-8') as contents_index_arch_file:
-            for file_line in contents_index_arch_file:
-                content_index_info = {}
-                split_line = file_line.split()  #split on space, package name will always be at last index position
+        contents_index_arch_file =  gzip.open(self.contents_index_file_name, 'rt',encoding='utf-8')
+        for file_line in contents_index_arch_file:
+            content_index_info = {}
+            split_line = file_line.split()  #split on space, package name will always be at last index position
 
-                #code below cleans the filename and package name info
-                content_index_info['filename'] = self.__concat_filename_with_space(split_line[0:-1])
-                content_index_info['package'] = self.__split_packagae_names(split_line[-1])
+            #code below cleans the filename and package name info
+            content_index_info['filename'] = self.__concat_filename_with_space(split_line[0:-1])
+            content_index_info['package'] = self.__split_packagae_names(split_line[-1])
 
-                for seperated_package_name in content_index_info['package']:
-                    # list of all package name without the associated filename
-                    content_index_arch_info.append(seperated_package_name)
+            for seperated_package_name in content_index_info['package']:
+                # list of all package name without the associated filename
+                content_index_arch_info.append(seperated_package_name)
 
-                """ list of all package name without the associated filename
-                    it is commented out because i realized we don't exactly need the associated filename to 
-                    get the package statisitcs but if you want to see it, you can remove the comment below and 
-                    comment out the append code above"""
-                    #content_index_info.append([content_index['filename'], seperated_package_name])
+            """ list of all package name without the associated filename
+                it is commented out because i realized we don't exactly need the associated filename to 
+                get the package statisitcs but if you want to see it, you can remove the comment below and 
+                comment out the append code above"""
+                #content_index_info.append([content_index['filename'], seperated_package_name])
 
         self.logger.info("Obtained package name...")
         return content_index_arch_info
