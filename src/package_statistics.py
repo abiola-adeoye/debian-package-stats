@@ -37,8 +37,9 @@ class DebPackageStatistics():
             self.delete_contents_index_file()
 
     def __get_contents_index_package_url(self) -> str:
-        mirror_url = os.environ['DEBIAN_MIRROR_URL']
-
+        mirror_url = ""
+        if 'DEBIAN_MIRROR_URL' in os.environ:       # check existence of env variable
+            mirror_url = os.environ['DEBIAN_MIRROR_URL']
         if not mirror_url:      # if mirror url can't be gotten from env variable
             mirror_url = "http://ftp.uk.debian.org/debian/dists/stable/main/"
 

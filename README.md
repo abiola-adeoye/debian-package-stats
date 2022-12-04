@@ -130,13 +130,6 @@ too much third-party modules.
 
 
 
-## Improvement to program
-
-1. Test cases can be written for the program to ensure that it is always working as expected if the test case pass 
-and if it doesn't somthing needs to be fixed or new maintainance needs to be rolled back
-2. Code to handle situations where a new mirror link is inserted, the situation should handle if the input 
-architecture for the new insert link doesn't exist so the program doesn't break
-
 
 
 
