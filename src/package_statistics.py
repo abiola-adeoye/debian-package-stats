@@ -1,13 +1,15 @@
-from . import package_statistics_logging
-from collections import defaultdict
-from dotenv import load_dotenv
-from typing import List, Dict
-import gzip
-import wget
-import sys
 import os
+import gzip
+from typing import List, Dict
+from collections import defaultdict
 
-class DebPackageStatistics(object):
+import wget
+from dotenv import load_dotenv
+
+from . import package_statistics_logging
+
+
+class DebPackageStatistics():
 
     def __init__(self, arch: str):
         #setup logger for debian packages statistics
@@ -27,7 +29,7 @@ class DebPackageStatistics(object):
 
             all_valid_package_name = self.__get_package_name(contents_index_file_data)
 
-            all_valid_package_name_statistics = self.__get_package_statistics(all_valid_package_name)
+            all_valid_package_name_statistics= self.__get_package_statistics(all_valid_package_name)
 
             self.__order_package_statistics(all_valid_package_name_statistics)
 
@@ -43,7 +45,8 @@ class DebPackageStatistics(object):
 
     def __download_arch_contents_index_file(self):
         file_path = "./"+ self.contents_index_file_name
-        if not os.path.isfile(file_path):   # check if the contents index file does not exist in directory
+        # check if the contents index file does not exist in directory
+        if not os.path.isfile(file_path):
             content_index_package_download_url = self.__get_contents_index_package_url()
 
             try:
@@ -52,8 +55,9 @@ class DebPackageStatistics(object):
                 self.logger.info(f"Contents file for {self.arch} downloaded...")
 
             except Exception as err:
-                self.logger.error(f"Error while downloading the contents file for {self.arch}, either the link is "
-                                  " incorrect or architecture not available for this mirror...")
+                self.logger.error(f"Error downloading contents file for {self.arch}, link is"
+                                  " incorrect or architecture not available for mirror...")
+                self.logger.error(msg=err)
 
     # throws error sometimes due to a windows bug
     def delete_contents_index_file(self):
@@ -70,7 +74,8 @@ class DebPackageStatistics(object):
 
     @classmethod
     def __split_packagae_names(cls, package_list_name: List[str]) -> List[str]:
-        if ',' in package_list_name:    #if true means multiple packages had same filename associated with them
+        # if true means multiple packages had same filename associated with them
+        if ',' in package_list_name:
             return package_list_name.split(',')    # splits the packages name by ',' into a list
         return [package_list_name]
 
@@ -81,7 +86,7 @@ class DebPackageStatistics(object):
         contents_index_arch_file =  gzip.open(self.contents_index_file_name, 'rt',encoding='utf-8')
         for file_line in contents_index_arch_file:
             content_index_info = {}
-            split_line = file_line.split()  #split on space, package name will always be at last index position
+            split_line = file_line.split()  #split on space, package will always be last index pos
 
             #code below cleans the filename and package name info
             content_index_info['filename'] = self.__concat_filename_with_space(split_line[0:-1])
@@ -119,7 +124,7 @@ class DebPackageStatistics(object):
 
         valid_package_name = []
         for package_name in arch_content_index_package_name:
-            checking = self.__validate_package_name(package_name)   #function up called to append valid package name
+            checking = self.__validate_package_name(package_name)   #function is defined above
             valid_package_name.append(checking)
         return valid_package_name
 
