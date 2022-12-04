@@ -10,7 +10,7 @@ The program parses the file and outputs the statistics of the top 10 packages wi
 *package name 1*.............*number of files*  
 *package name 2*.............*number of files*
 
-For the purpose of testing the program, the following link has been provided: http://ftp.uk.debian.org/debian/dists/stable/main/.
+For the purpose of testing the program, the following mirror link has been provided: http://ftp.uk.debian.org/debian/dists/stable/main/.
 
 ## How to use project
 
