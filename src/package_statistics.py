@@ -6,17 +6,18 @@ from collections import defaultdict
 import wget
 from dotenv import load_dotenv
 
-from . import package_statistics_logging
+from .package_statistics_logging import load_logging
 
 
 class DebPackageStatistics():
 
     def __init__(self, arch: str):
         #setup logger for debian packages statistics
-        self.logger = package_statistics_logging.load_logging(__name__)
+        self.logger = load_logging(__name__)
 
         self.arch = arch
         self.contents_index_file_name = f"Contents-{self.arch}.gz"
+        self.contents_index_file_path = './' + self.contents_index_file_name
         load_dotenv()   # loads env variable from, but if not available uses a default link
 
         self.logger.info(f"Debian package statistics for {self.arch} started...")
@@ -50,8 +51,7 @@ class DebPackageStatistics():
             content_index_package_download_url = self.__get_contents_index_package_url()
 
             try:
-                file_name = wget.download(content_index_package_download_url)
-                self.contents_index_file_path = './'+file_name
+                wget.download(content_index_package_download_url)
                 self.logger.info(f"Contents file for {self.arch} downloaded...")
 
             except Exception as err:
