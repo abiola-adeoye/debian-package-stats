@@ -38,4 +38,4 @@ or
 ```bash
 python runner.py $architecture-argument
 ```
-![sample program run](https://drive.google.com/file/d/11AqFQhFA-PVgqXZvh_p2O715ne2_cgcp/view?usp=sharing)
+![sample program run](https://photos.app.goo.gl/6YeKfAyECGnJ6G5QA)
