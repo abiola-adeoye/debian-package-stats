@@ -107,6 +107,8 @@ class DebPackageStatistics(object):
     the idea is the full package name can be split ito at least two places by '/' anything less and it is invalide
     """
     def __validate_package_name(self, package_name_value:str ) -> str:
+        if self.arch == 'source':
+            return package_name_value
         package_name = package_name_value.split('/')
         if len(package_name) < 2:
             return ""
