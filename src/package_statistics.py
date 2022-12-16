@@ -65,16 +65,16 @@ class DebPackageStatistics():
         os.remove(self.contents_index_file_path)
 
     # fixes filenames with ' ' back together after they've been split
-    @classmethod
-    def __concat_filename_with_space(cls, split_filename: List[str]) -> str:
+    @staticmethod
+    def __concat_filename_with_space(split_filename: List[str]) -> str:
         filename = split_filename[0]
         if len(split_filename) > 1:      #if true, means filename had spaces in it
             for seperated_filename in split_filename[1::]:
                 filename = ' ' + seperated_filename
         return filename
 
-    @classmethod
-    def __split_packagae_names(cls, package_list_name: List[str]) -> List[str]:
+    @staticmethod
+    def __split_packagae_names(package_list_name: List[str]) -> List[str]:
         # if true means multiple packages had same filename associated with them
         if ',' in package_list_name:
             return package_list_name.split(',')    # splits the packages name by ',' into a list
