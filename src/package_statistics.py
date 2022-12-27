@@ -9,17 +9,48 @@ from dotenv import load_dotenv
 from .package_statistics_logging import load_logging
 
 
+class DebianContentsFile:
+    def __init__(self, arch):
+        load_dotenv()
+        self.logger = load_logging(__name__)    # setup logger for debian packages statistics
+
+        self.arch = arch
+        self.contents_index_file_name = f"Contents-{self.arch}.gz"
+        self.contents_index_file_path = "./" + self.contents_index_file_name
+
+    def _get_contents_index_url(self) -> str:
+        mirror_url = ""
+        if 'DEBIAN_MIRROR_URL' in os.environ:       # check existence of env variable
+            mirror_url = os.environ['DEBIAN_MIRROR_URL']
+            return mirror_url + self.contents_index_file_name
+
+        mirror_url = "http://ftp.uk.debian.org/debian/dists/stable/main/"       #const mirror url used when no env
+        return mirror_url + self.contents_index_file_name
+
+    def download_arch_contents_index_file(self):
+        # check if the contents index file does not exist in directory
+        if not os.path.isfile(self.contents_index_file_path):
+            content_index_download_url = self._get_contents_index_url()
+
+            try:
+                wget.download(content_index_download_url)
+                self.logger.info(f"Contents file for {self.arch} downloaded...")
+
+            except Exception as err:
+                self.logger.error(f"Error downloading contents file for {self.arch}, link is"
+                                  " incorrect or architecture not available for mirror...")
+                self.logger.error(msg=err)
+
+    # throws error sometimes due to a windows bug
+    def delete_contents_index_file(self):
+        os.remove(self.contents_index_file_path)
+
+
 class DebPackageStatistics():
 
     def __init__(self, arch: str):
         #setup logger for debian packages statistics
         self.logger = load_logging(__name__)
-
-        self.arch = arch
-        self.contents_index_file_name = f"Contents-{self.arch}.gz"
-        self.contents_index_file_path = './' + self.contents_index_file_name
-        load_dotenv()   # loads env variable from, but if not available uses a default link
-
         self.logger.info(f"Debian package statistics for {self.arch} started...")
 
     # only method to be called outside class
@@ -36,35 +67,8 @@ class DebPackageStatistics():
 
             self.delete_contents_index_file()
 
-    def __get_contents_index_package_url(self) -> str:
-        mirror_url = ""
-        if 'DEBIAN_MIRROR_URL' in os.environ:       # check existence of env variable
-            mirror_url = os.environ['DEBIAN_MIRROR_URL']
-        if not mirror_url:      # if mirror url can't be gotten from env variable
-            mirror_url = "http://ftp.uk.debian.org/debian/dists/stable/main/"
-
-        return mirror_url + self.contents_index_file_name
-
-    def __download_arch_contents_index_file(self):
-        file_path = "./"+ self.contents_index_file_name
-        # check if the contents index file does not exist in directory
-        if not os.path.isfile(file_path):
-            content_index_package_download_url = self.__get_contents_index_package_url()
-
-            try:
-                wget.download(content_index_package_download_url)
-                self.logger.info(f"Contents file for {self.arch} downloaded...")
-
-            except Exception as err:
-                self.logger.error(f"Error downloading contents file for {self.arch}, link is"
-                                  " incorrect or architecture not available for mirror...")
-                self.logger.error(msg=err)
-
-    # throws error sometimes due to a windows bug
-    def delete_contents_index_file(self):
-        os.remove(self.contents_index_file_path)
-
     # fixes filenames with ' ' back together after they've been split
+    # not used because it's unrequired for final solution but works
     @staticmethod
     def __concat_filename_with_space(split_filename: List[str]) -> str:
         filename = split_filename[0]
@@ -90,18 +94,10 @@ class DebPackageStatistics():
             split_line = file_line.split()  #split on space, package will always be last index pos
 
             #code below cleans the filename and package name info
-            content_index_info['filename'] = self.__concat_filename_with_space(split_line[0:-1])
+            #content_index_info['filename'] = self.__concat_filename_with_space(split_line[0:-1])
             content_index_info['package'] = self.__split_packagae_names(split_line[-1])
 
-            for seperated_package_name in content_index_info['package']:
-                # list of all package name without the associated filename
-                content_index_arch_info.append(seperated_package_name)
-
-            """ list of all package name without the associated filename
-                it is commented out because i realized we don't exactly need the associated filename to 
-                get the package statisitcs but if you want to see it, you can remove the comment below and 
-                comment out the append code above"""
-                #content_index_info.append([content_index['filename'], seperated_package_name])
+            content_index_arch_info.extend(content_index_info['package'])
 
         self.logger.info("Obtained package name...")
         return content_index_arch_info
