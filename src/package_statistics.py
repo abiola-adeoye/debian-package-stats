@@ -40,13 +40,11 @@ class DebianContentsFile:
                                   " incorrect or architecture not available for mirror...")
                 self.logger.error(msg=err)
 
-    # throws error sometimes due to a windows bug
     def delete_contents_index_file(self):
         os.remove(self.contents_index_file_path)
 
 
 class DebPackageStatistics(DebianContentsFile):
-
     def __init__(self, arch):
         super().__init__(arch)
         self.download_arch_contents_index_file()
@@ -68,10 +66,10 @@ class DebPackageStatistics(DebianContentsFile):
             split_line = file_line.split()  # split on space, package will always be last index pos
 
             # code below cleans the filename and package name info
-            # content_index_info['filename'] = self._concat_filename_with_space(split_line[0:-1])
-            content_index_info['package'] = self._split_packagae_names(split_line[-1])
+            # content_index_info = self._concat_filename_with_space(split_line[0:-1])
+            content_index_info = self._split_packagae_names(split_line[-1])
 
-            content_index_arch_info.extend(content_index_info['package'])
+            content_index_arch_info.extend(content_index_info)
 
         self.logger.info("Obtained package name...")
         return content_index_arch_info
@@ -118,15 +116,11 @@ class DebPackageStatistics(DebianContentsFile):
 
     # function orders and prints pacakge statistics with most files in descending order
     def order_package_statistics(self, stats: Dict[str, int]):
-        count = 0
         chars = 50
-        stats_sorted = sorted(stats, key=stats.get, reverse=True)
+        stats_sorted = sorted(stats, key=stats.get, reverse=True)[:10]
 
         print("\n\n")
         for stat_key in stats_sorted:
-            count += 1
-            if count > 10:
-                break
             len_package_name_chars = len(stat_key)
             fillers_to_print = chars - (len_package_name_chars)
             print(stat_key, stats[stat_key], sep="."*fillers_to_print)
