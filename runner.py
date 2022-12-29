@@ -21,4 +21,5 @@ def cil_debian_package_statistics():
         else:
             print("Insert new link or input available architecture")
 
+
 cil_debian_package_statistics()
