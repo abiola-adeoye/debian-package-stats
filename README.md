@@ -17,18 +17,15 @@ For the purpose of testing the program, the following mirror link has been provi
 1. Clone the project to the local directory of choice and open it with IDE of choice.
 
 
-2. Clone the project to the local directory of choice and open it with IDE of choice.
+2. Open terminal and change directory to where project is kept.
 
 
-3. Open terminal and change directory to where project is kept.
-
-
-4. Install dependencies and program requirements by running the command below in the terminal box
+3. Install dependencies and program requirements by running the command below in the terminal box
 ```bash
 pip install -r requirements.txt
 ```
 
-5. Once requirements are installed, run program by calling any of the two lines below where
+4. Once requirements are installed, run program by calling any of the two lines below where
 **'$architecture-argument' is the name of the architecture you want to find out the statistics for**
 ```bash
 runner.py $architecture-argument
