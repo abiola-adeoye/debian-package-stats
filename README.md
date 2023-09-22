@@ -12,7 +12,7 @@ The program parses the file and outputs the statistics of the top 10 packages wi
 
 For the purpose of testing the program, the following mirror link has been provided: http://ftp.uk.debian.org/debian/dists/stable/main/.
 
-## How to use project
+## How to run project
 
 1. Clone the project to the local directory of choice and open it with IDE of choice.
 
